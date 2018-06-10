@@ -10,8 +10,8 @@ q.setParameter("id", "4b0621afba0844c79b02072e9f1e990e");
 List<Map<String,Object>> datas =q.list();
 ```
 
-### 快速开始
-#### 创建DTO实体对象
+## 快速开始
+##### 1. 创建DTO实体对象
 ```java
 @Table
 public class Test implements DTO{
@@ -59,6 +59,22 @@ public class Test implements DTO{
 |javax.persistence.Id    |用来指定数据库的主键,通常在数据库中组件应该是一个唯一的GUID或者UUID,自增的,不支持联合主键
 |javax.persistence.Column|用来指定列的名称以及相关的属性,如果不指定name属性,那么默认为字段的名称  
 
+##### 2. 进行保存操作
 
+```java
+test.t.sql.dto.Test t = new test.t.sql.dto.Test();
+t.setId("id");
+t.setName("name");
+t.setValue("value");
+t.setCommen("commen");
+sf.getCurrentSession().create(t);
+
+//完整的代码可以在test.t.sql.TestSession这个类里面查看,并进行测试
+/** 测试的表名称为test ,表结构如下
+id                               |name |value |commen |
+---------------------------------|-----|------|-------|
+18d684a581dc4fd3a38bdadecc981661 |name |value |123    |
+**/
+```
 
 
