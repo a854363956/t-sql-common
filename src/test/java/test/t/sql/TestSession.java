@@ -101,6 +101,7 @@ public class TestSession {
 	public void testQuery() {
 		Session session = sf.getCurrentSession();
 		Query<Map<String,Object>> q = session.createQuery("select * from test where id=:id",HashMap.class);
+		q.setTimeOut(20);
 		q.setParameter("id", "4b0621afba0844c79b02072e9f1e990e");
 		List<Map<String,Object>> datas =q.list();
 		System.out.println(datas.size());
