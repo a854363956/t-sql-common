@@ -91,7 +91,46 @@ t.setCommen("test");
 sf.getCurrentSession().update(t);
 ```   
 
-update 是根据DTO的ID字段来进行更新,这个工具类不会校验数据库的表结构,如果数据的表结构不是主键,可能会导致同一个实体更新多条数据,很显然这并不是想要达到的效果  
+update 是根据DTO的ID字段来进行更新,这个工具类不会校验数据库的表结构,如果不是主键,可能会导致同一个实体更新多条数据,很显然这并不是想要达到的效果  
 
-##### 4. 更新删除操作
+##### 4. 更新删除操作  
+
+```java
+test.t.sql.dto.Test t = new test.t.sql.dto.Test();
+t.setId("id");
+t.setName("name");
+t.setValue("value");
+t.setCommen("commen");
+//保存一个数据,进行删除测试
+sf.getCurrentSession().create(t);
+//删除这个数据
+sf.getCurrentSession().delete(t);
+```
+update 是根据DTO的ID字段来进行删除,这个工具类不会校验数据库的表结构,如果不是主键,可能会导致同一个实体删除多条数据,很显然这并不是想要达到的效果  
+
+##### 5. 删除操作  
+
+```java
+test.t.sql.dto.Test t = new test.t.sql.dto.Test();
+t.setId("id");
+t.setName("name");
+t.setValue("value");
+t.setCommen("commen");
+//创建数据用于测试删除
+sf.getCurrentSession().create(t);
+t.setCommen("test");
+//删除数据
+sf.getCurrentSession().delete(t);
+```  
+delete 是根据DTO的id字段来进行操作   
+
+##### 6. 查询数据
+```java
+Session session = sf.getCurrentSession();
+Query<Map<String,Object>> q = session.createQuery("select * from test where id=:id",HashMap.class);
+q.setTimeOut(20);
+q.setParameter("id", "4b0621afba0844c79b02072e9f1e990e");
+List<Map<String,Object>> datas =q.list();
+System.out.println(datas.size());
+```
 
