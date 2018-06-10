@@ -77,5 +77,21 @@ t.setValue("value");
 t.setCommen("commen");
 sf.getCurrentSession().create(t);
 ```
+##### 3. 进行更新操作
+```java
+test.t.sql.dto.Test t = new test.t.sql.dto.Test();
+t.setId("id");
+t.setName("name");
+t.setValue("value");
+t.setCommen("commen");
+//此方法用来保存一个最新的数据
+sf.getCurrentSession().create(t); 
+t.setCommen("test");
+//此方法有来测试数据库是否正常更新
+sf.getCurrentSession().update(t);
+```   
 
+update 是根据DTO的ID字段来进行更新,这个工具类不会校验数据库的表结构,如果数据的表结构不是主键,可能会导致同一个实体更新多条数据,很显然这并不是想要达到的效果  
+
+##### 4. 更新删除操作
 
