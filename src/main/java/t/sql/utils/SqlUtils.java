@@ -7,21 +7,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import t.sql.exception.TSQLException;
 import t.sql.interfaces.DTO;
 
 public class SqlUtils {
-	private Logger logger = LoggerFactory.getLogger(SqlUtils.class);
 	public int toUpdateSqlDto(DTO dto,Connection connection) {
 		try {
 			Class<?> clzz = dto.getClass();
