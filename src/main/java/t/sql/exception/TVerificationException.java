@@ -1,6 +1,6 @@
 package t.sql.exception;
 
-public class TVerificationException  extends RuntimeException {
+public class TVerificationException  extends TSQLException {
 	private static final long serialVersionUID = 1L;
 
 	public TVerificationException() {

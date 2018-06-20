@@ -17,6 +17,9 @@ public interface Session {
 	void update(DTO data);
 	void delete(DTO data);
 	void create(DTO data);
+	/**
+	 *批量更新
+	 */
 	void updateBatch(Collection<DTO> datas);
 	/**
 	 * 批量创建数据
@@ -35,4 +38,11 @@ public interface Session {
 	 * @return
 	 */
 	Transaction openTransaction();
+	/***
+	 * 执行DMLSQL
+	 * @param sql  要执行的SQL语句
+	 * @param obj  要替换的参数
+	 * @return
+	 */
+	int nativeDMLSQL(String sql,Object... obj);
 }
