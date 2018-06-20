@@ -136,7 +136,7 @@ System.out.println(datas.size());
 ```
 
 
-##### 6. 对原生SQL的支持DML支持
+##### 6. 对原生SQL的DML支持
 ```java
 Session session = sf.getCurrentSession();
 String sql = "update test where id=? ";
@@ -144,5 +144,7 @@ String sql = "update test where id=? ";
 int i = session.nativeDMLSQL(sql,"12345678");
 System.out.println(i);
 ```
-如果需要对原生SQL进行DML的操作支持,那么使用nativeDMLSQL即可,主要参数替换需要采用__?__号的方式进行操作
+如果需要对原生SQL进行DML的操作支持,那么使用nativeDMLSQL即可,主要参数替换需要采用__?__号的方式进行操作 
+
+
 
