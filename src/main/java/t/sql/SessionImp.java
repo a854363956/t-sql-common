@@ -12,7 +12,6 @@ import t.sql.query.QueryImp;
 import t.sql.transaction.Transaction;
 import t.sql.utils.SqlUtils;
 import t.sql.utils.VerificationUtils;
-import t.sql.validates.Verification;
 /**
  * Session的实现类
  * @author zhangj
