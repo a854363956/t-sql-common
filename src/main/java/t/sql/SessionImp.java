@@ -65,7 +65,7 @@ public class SessionImp implements Session{
 		}
 		sqlUtils.toUpdateSqlDtoJDBCBatch(datas, connection);
 	}
-
+	
 	@Override
 	public void createBatch(Collection<DTO> datas) {
 		for(DTO dto :datas) {
@@ -94,6 +94,11 @@ public class SessionImp implements Session{
 				}
 			}
 		}
+	}
+	
+	@Override
+	public void deleteBatch(Collection<DTO> datas) {
+		sqlUtils.toDeleteSqlDtoJDBCBatch(datas, connection);
 	}
 
 }

@@ -14,8 +14,20 @@ import t.sql.transaction.Transaction;
  * @email zhangjin0908@hotmail.com
  */
 public interface Session {
+	/**
+	 * 根据DTO来进行更新数据
+	 * @param data
+	 */
 	void update(DTO data);
+	/**
+	 * 根据DTO来进行删除数据
+	 * @param data
+	 */
 	void delete(DTO data);
+	/**
+	 * 根据DTO来进行创建数据
+	 * @param data
+	 */
 	void create(DTO data);
 	/**
 	 *批量更新
@@ -26,6 +38,11 @@ public interface Session {
 	 * @param datas 要创建的数据,必须实现DTO的接口
 	 */
 	void createBatch(Collection<DTO> datas);
+	/**
+	 * 批量删除数据
+	 * @param datas 要删除的数据,必须实现DTO的接口
+	 */
+	void deleteBatch(Collection<DTO> datas);
 	/**
 	 * 创建查询对象
 	 * @param sql  要查询的sql

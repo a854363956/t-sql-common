@@ -3,6 +3,7 @@ package t.sql.utils;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -145,6 +146,53 @@ public class SqlUtils {
 		} catch (Exception e) {
 			throw new TSQLException(e);
 		}
+	}
+	public int[] toDeleteSqlDtoJDBCBatch(Collection<DTO> dtos,Connection connection) {
+		try {
+			Class<?> clzz = dtos.iterator().next().getClass();
+			Field[] fields =clzz.getDeclaredFields();
+			String tableName=clzz.getDeclaredAnnotation(Table.class).name();
+			if("".equals(tableName)) {
+				tableName=clzz.getSimpleName();
+			}
+			String idName= null;
+			for(Field field :fields) {
+				Id id=field.getDeclaredAnnotation(Id.class);
+				Column column =field.getDeclaredAnnotation(Column.class);
+				if(id!=null) {
+					field.setAccessible(true);
+				}
+				String name = column.name();
+				if(name.equals("")) {
+					name=field.getName();
+				}
+				idName = name;
+				break;
+			}
+			String sql =String.format(" delete %s where %s=?", tableName,idName);
+			PreparedStatement ps =connection.prepareStatement(sql);
+			int i=0;
+			for( DTO  dto : dtos) {
+				Object idValue=null;
+				for(Field field :fields) {
+					Id id=field.getDeclaredAnnotation(Id.class);
+					if(id!=null) {
+						field.setAccessible(true);
+						idValue = field.get(dto);
+						break;
+					}
+				}
+				ps.setObject(i+1, idValue);
+				ps.addBatch();
+				i++;
+			}
+			return ps.executeBatch();
+		} catch (Exception e) {
+			throw new TSQLException(e);
+		}
+		
+		
+		
 	}
 	public int[] toCreateSqlDtoJDBCBatch(Collection<DTO> dtos,Connection connection) {
 		try {

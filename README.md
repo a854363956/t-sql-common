@@ -128,9 +128,21 @@ delete 是根据DTO的id字段来进行操作
 ```java
 Session session = sf.getCurrentSession();
 Query<Map<String,Object>> q = session.createQuery("select * from test where id=:id",HashMap.class);
+//设置数据库超时时间,如果是查询数据,设置超时时间很有必要
 q.setTimeOut(20);
 q.setParameter("id", "4b0621afba0844c79b02072e9f1e990e");
 List<Map<String,Object>> datas =q.list();
 System.out.println(datas.size());
 ```
+
+
+##### 6. 对原生SQL的支持DML支持
+```java
+Session session = sf.getCurrentSession();
+String sql = "update test where id=? ";
+//执行原生SQL的DML操作
+int i = session.nativeDMLSQL(sql,"12345678");
+System.out.println(i);
+```
+如果需要对原生SQL进行DML的操作支持,那么使用nativeDMLSQL即可,主要参数替换需要采用__?__号的方式进行操作
 
