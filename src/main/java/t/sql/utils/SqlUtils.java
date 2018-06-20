@@ -169,9 +169,8 @@ public class SqlUtils {
 				idName = name;
 				break;
 			}
-			String sql =String.format(" delete %s where %s=?", tableName,idName);
+			String sql =String.format(" delete  from %s where %s=?", tableName,idName);
 			PreparedStatement ps =connection.prepareStatement(sql);
-			int i=0;
 			for( DTO  dto : dtos) {
 				Object idValue=null;
 				for(Field field :fields) {
@@ -182,9 +181,8 @@ public class SqlUtils {
 						break;
 					}
 				}
-				ps.setObject(i+1, idValue);
+				ps.setObject(1, idValue);
 				ps.addBatch();
-				i++;
 			}
 			return ps.executeBatch();
 		} catch (Exception e) {

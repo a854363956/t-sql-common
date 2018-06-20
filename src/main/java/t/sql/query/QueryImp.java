@@ -243,7 +243,7 @@ public class QueryImp<T> implements Query<T> {
 			}
 			return (T)m;
 		}else if(ob instanceof DTO) {
-			Field[] fields =tClass.getFields();
+			Field[] fields =tClass.getDeclaredFields();
 			for(int i=0;i<labels.length;i++) {
 				for(Field f :fields) {
 					Column column =f.getDeclaredAnnotation(Column.class);

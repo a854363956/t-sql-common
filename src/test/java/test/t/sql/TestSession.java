@@ -97,6 +97,17 @@ public class TestSession {
 		t.setCommen("test");
 		sf.getCurrentSession().update(t);
 	}
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testDeleteBatch() {
+		Session session = sf.getCurrentSession();
+		Transaction t =session.openTransaction();
+		Query<test.t.sql.dto.Test> q = session.createQuery("select * from test",test.t.sql.dto.Test.class);
+		List<?> list = q.list();
+		session.deleteBatch((List<DTO>)list);
+		t.commit();
+	}
+	
 	@Test
 	public void testQuery() {
 		Session session = sf.getCurrentSession();
