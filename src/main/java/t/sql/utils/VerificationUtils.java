@@ -27,17 +27,17 @@ public class VerificationUtils {
 					Object value =field.get(dto);
 					if(v.notNull()) {
 						if(value == null || "".equals(value)) {
-							throw new TVerificationException(String.format("数据值为[%s]-%s",value,v.message()));
+							throw new TVerificationException(String.format("Data value is [%s]-%s",value,v.message()));
 						}
 					}else if(!"".equals(v.blacklistRegular()) && value instanceof CharSequence) {
 						List<String> l = StringUtils.findRegular((CharSequence)value, v.blacklistRegular());
 						if(l.size() > 0) {
-							throw new TVerificationException(String.format("数据值为[%s]-%s",value,v.message()));
+							throw new TVerificationException(String.format("Data value is [%s]-%s",value,v.message()));
 						}
 					}else if(!"".equals(v.blacklistRegular()) && value instanceof CharSequence) {
 						List<String> l = StringUtils.findRegular((CharSequence)value, v.blacklistRegular());
 						if(l.size() == 0) {
-							throw new TVerificationException(String.format("数据值为[%s]-%s",value,v.message()));
+							throw new TVerificationException(String.format("Data value is [%s]-%s",value,v.message()));
 						}
 					}
 				}
@@ -45,6 +45,5 @@ public class VerificationUtils {
 		} catch (Exception e) {
 			throw new TVerificationException(e);
 		}
-		
 	 }
 }
