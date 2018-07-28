@@ -3,6 +3,7 @@ package t.sql.utils;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -18,6 +19,7 @@ import t.sql.interfaces.DTO;
 
 public class SqlUtils {
 	public int toUpdateSqlDto(DTO dto,Connection connection) {
+		PreparedStatement ps  = null;
 		try {
 			Class<?> clzz = dto.getClass();
 			Field[] fields =clzz.getDeclaredFields();
@@ -44,7 +46,7 @@ public class SqlUtils {
 			String sql = String.format("update %s %s %s", tableName,_set,where);
 			String exSql = sql.replaceAll(":[a-zA-Z_]+", "?");
 			List<String> l = StringUtils.findRegular(sql, ":[a-zA-Z_]+");
-			PreparedStatement ps =connection.prepareStatement(exSql);
+			ps =connection.prepareStatement(exSql);
 			for(int i=0;i<l.size();i++) {
 				String name=l.get(i).replace(":", "");
 				Field f= clzz.getDeclaredField(name);
@@ -62,6 +64,14 @@ public class SqlUtils {
 			}
 		} catch (Exception e) {
 			throw new TSQLException(e);
+		}finally {
+			if(ps != null ) {
+				try {
+					ps.close();
+				} catch (SQLException e) {
+					throw new TSQLException(e);
+				}
+			}
 		}
 	}
 	/**
@@ -71,6 +81,7 @@ public class SqlUtils {
 	 * @return
 	 */
 	public  int toDeleteSqlDto(DTO dto,Connection connection) {
+		PreparedStatement ps  = null;
 		try {
 			Class<?> clzz = dto.getClass();
 			Field[] fields =clzz.getDeclaredFields();
@@ -82,7 +93,7 @@ public class SqlUtils {
 			String sql =String.format("delete from %s %s", tableName,where);
 			List<String> l = StringUtils.findRegular(sql, ":[A-z_]+");
 			String exSql = sql.replaceAll(":[a-zA-Z_]+", "?");
-			PreparedStatement ps =connection.prepareStatement(exSql);
+		    ps =connection.prepareStatement(exSql);
 			for(int i=0;i<l.size();i++) {
 				String name=l.get(i).replace(":", "");
 				Field f= clzz.getDeclaredField(name);
@@ -100,10 +111,19 @@ public class SqlUtils {
 			}
 		} catch (Exception e) {
 			throw new TSQLException(e);
+		}finally {
+			if(ps != null ) {
+				try {
+					ps.close();
+				} catch (SQLException e) {
+					throw new TSQLException(e);
+				}
+			}
 		}
 		
 	}
 	public int[] toUpdateSqlDtoJDBCBatch(Collection<DTO> dtos,Connection connection) {
+		PreparedStatement ps  = null;
 		try {
 			Class<?> clzz = dtos.iterator().next().getClass();
 			Field[] fields =clzz.getDeclaredFields();
@@ -130,7 +150,7 @@ public class SqlUtils {
 		
 			List<String> l = StringUtils.findRegular(sql, ":[A-z_]+");
 			String exSql = sql.toString().replaceAll(":[a-zA-Z_]+", "?");
-			PreparedStatement ps =connection.prepareStatement(exSql);
+			ps =connection.prepareStatement(exSql);
 			for(DTO dto :dtos) {
 				for(int i=0;i<l.size();i++) {
 					String name=l.get(i).replace(":", "");
@@ -144,9 +164,18 @@ public class SqlUtils {
 			return ps.executeBatch();			
 		} catch (Exception e) {
 			throw new TSQLException(e);
+		}finally {
+			if(ps != null ) {
+				try {
+					ps.close();
+				} catch (SQLException e) {
+					throw new TSQLException(e);
+				}
+			}
 		}
 	}
 	public int[] toDeleteSqlDtoJDBCBatch(Collection<DTO> dtos,Connection connection) {
+		PreparedStatement ps  = null;
 		try {
 			Class<?> clzz = dtos.iterator().next().getClass();
 			Field[] fields =clzz.getDeclaredFields();
@@ -169,7 +198,7 @@ public class SqlUtils {
 				break;
 			}
 			String sql =String.format(" delete  from %s where %s=?", tableName,idName);
-			PreparedStatement ps =connection.prepareStatement(sql);
+			ps =connection.prepareStatement(sql);
 			for( DTO  dto : dtos) {
 				Object idValue=null;
 				for(Field field :fields) {
@@ -186,12 +215,21 @@ public class SqlUtils {
 			return ps.executeBatch();
 		} catch (Exception e) {
 			throw new TSQLException(e);
+		} finally {
+			if(ps != null ) {
+				try {
+					ps.close();
+				} catch (SQLException e) {
+					throw new TSQLException(e);
+				}
+			}
 		}
 		
 		
 		
 	}
 	public int[] toCreateSqlDtoJDBCBatch(Collection<DTO> dtos,Connection connection) {
+		PreparedStatement ps  = null;
 		try {
 			Class<?> clzz = dtos.iterator().next().getClass();
 			Field[] fields =clzz.getDeclaredFields();
@@ -227,7 +265,7 @@ public class SqlUtils {
 			sql.append(")");
 			List<String> l = StringUtils.findRegular(sql, ":[A-z_]+");
 			String exSql = sql.toString().replaceAll(":[a-zA-Z_]+", "?");
-			PreparedStatement ps =connection.prepareStatement(exSql);
+			ps=connection.prepareStatement(exSql);
 			for(DTO dto :dtos) {
 				for(Field field :fields) {
 					Id id=field.getDeclaredAnnotation(Id.class);
@@ -249,10 +287,19 @@ public class SqlUtils {
 			return ps.executeBatch();			
 		} catch (Exception e) {
 			throw new TSQLException(e);
+		} finally {
+			if(ps != null ) {
+				try {
+					ps.close();
+				} catch (SQLException e) {
+					throw new TSQLException(e);
+				}
+			}
 		}
 	}
 	
 	public int toCreateSqlDto(DTO dto,Connection connection) {
+		PreparedStatement ps  = null;
 		try {
 			Class<?> clzz = dto.getClass();
 			Field[] fields =clzz.getDeclaredFields();
@@ -291,7 +338,7 @@ public class SqlUtils {
 			sql.append(")");
 			List<String> l = StringUtils.findRegular(sql, ":[A-z_]+");
 			String exSql = sql.toString().replaceAll(":[a-zA-Z_]+", "?");
-			PreparedStatement ps =connection.prepareStatement(exSql);
+			ps =connection.prepareStatement(exSql);
 			for(int i=0;i<l.size();i++) {
 				String name=l.get(i).replace(":", "");
 				Field f= clzz.getDeclaredField(name);
@@ -302,6 +349,14 @@ public class SqlUtils {
 			return ps.executeUpdate();
 		} catch (Exception e) {
 			throw new TSQLException(e);
+		}finally {
+			if(ps != null ) {
+				try {
+					ps.close();
+				} catch (SQLException e) {
+					throw new TSQLException(e);
+				}
+			}
 		}
 		
 	}
