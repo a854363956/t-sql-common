@@ -128,7 +128,7 @@ delete 是根据DTO的id字段来进行操作
 ```java
 Session session = sf.getCurrentSession();
 Query<Map<String,Object>> q = session.createQuery("select * from test where id=:id",HashMap.class);
-//设置数据库超时时间,如果是查询数据,设置超时时间很有必要
+//设置数据库超时时间,如果是查询数据,设置超时时间很有必要,可以在早期就可以发现出性能比较差的sql
 q.setTimeOut(20);
 q.setParameter("id", "4b0621afba0844c79b02072e9f1e990e");
 List<Map<String,Object>> datas =q.list();

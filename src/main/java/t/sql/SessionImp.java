@@ -95,7 +95,6 @@ public class SessionImp implements Session{
 			}
 		}
 	}
-	
 	@Override
 	public void deleteBatch(Collection<DTO> datas) {
 		sqlUtils.toDeleteSqlDtoJDBCBatch(datas, connection);

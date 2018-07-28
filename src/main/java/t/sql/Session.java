@@ -61,5 +61,6 @@ public interface Session {
 	 * @param obj  要替换的参数
 	 * @return
 	 */
-	int nativeDMLSQL(String sql,Object... obj);
+	int nativeDMLSQL(String sql,Object... obj); 
+
 }
