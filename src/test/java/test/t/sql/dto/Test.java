@@ -5,7 +5,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import t.sql.interfaces.DTO;
-import t.sql.validates.Verification;
+import t.sql.validates.StringVerification;
 
 @Table
 public class Test implements DTO{

@@ -4,7 +4,7 @@ import java.sql.Connection;
 
 import t.sql.exception.TSQLException;
 /**
- * 添加事物管理
+ * 事物管理
  * @author zhangj
  * @date   2018年6月9日 下午7:49:07 
  * @email  zhangjin0908@hotmail.com
@@ -19,6 +19,9 @@ public class Transaction {
 			throw new TSQLException(e);
 		}
 	}
+	/**
+	 * 提交当前打开的事物,如果当前的connection是关闭的,那么在提交事物的时候会报错
+	 */
 	public void commit() {
 		try {
 			if(connection.isClosed()) {
@@ -30,6 +33,9 @@ public class Transaction {
 			throw new TSQLException(e);
 		}
 	}
+	/**
+	 * 回滚当前的事物,如果当前的connection是关闭的,那么在回滚事物的时候会报错
+	 */
 	public void rollback() {
 		try {
 			if(connection.isClosed()) {

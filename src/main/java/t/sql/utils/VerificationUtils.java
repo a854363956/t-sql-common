@@ -5,7 +5,8 @@ import java.util.List;
 
 import t.sql.exception.TVerificationException;
 import t.sql.interfaces.DTO;
-import t.sql.validates.Verification;
+import t.sql.validates.NumberVerification;
+import t.sql.validates.StringVerification;
 /**
  * 校验实体的工具类
  * @author zhangj
@@ -21,29 +22,67 @@ public class VerificationUtils {
 		try {
 			Field[] fields =  dto.getClass().getDeclaredFields();
 			for(Field field : fields) {
-				Verification v = field.getAnnotation(Verification.class);
-				if(v != null) {
-					field.setAccessible(true);
-					Object value =field.get(dto);
-					if(v.notNull()) {
-						if(value == null || "".equals(value)) {
-							throw new TVerificationException(String.format("Data value is [%s]-%s",value,v.message()));
-						}
-					}else if(!"".equals(v.blacklistRegular()) && value instanceof CharSequence) {
-						List<String> l = StringUtils.findRegular((CharSequence)value, v.blacklistRegular());
-						if(l.size() > 0) {
-							throw new TVerificationException(String.format("Data value is [%s]-%s",value,v.message()));
-						}
-					}else if(!"".equals(v.blacklistRegular()) && value instanceof CharSequence) {
-						List<String> l = StringUtils.findRegular((CharSequence)value, v.blacklistRegular());
-						if(l.size() == 0) {
-							throw new TVerificationException(String.format("Data value is [%s]-%s",value,v.message()));
-						}
-					}
+				field.setAccessible(true);
+				Object value =field.get(dto);
+				StringVerification v = field.getAnnotation(StringVerification.class);
+				NumberVerification nv = field.getAnnotation(NumberVerification.class);
+				if(v != null ) {
+					// 检查字符串是否符合校验
+					checkStringVerification(v,value);
 				}
+				if(nv != null) {
+					// 检查数值类型是否符合校验
+					checkNumberVerification(nv,value);
+				}
+				
 			}
 		} catch (Exception e) {
 			throw new TVerificationException(e);
 		}
+	 }
+	 
+	 private static void checkNumberVerification(NumberVerification nv ,Object value) {
+		 if(nv != null) {
+			 if(nv.notNull()) {
+				 if(value == null || "".equals(value)) {
+						throw new TVerificationException(String.format("Data value is [%s]-%s",value,"value can not be empty"));
+				  }
+			 }else if(value instanceof Integer ) {
+				 Integer val = (Integer) value;
+				 if(val< nv.min()) {
+					throw new TVerificationException(String.format("Data value is [%s]-%s",value,nv.message()));
+				 }else if(val > nv.max()){
+					throw new TVerificationException(String.format("Data value is [%s]-%s",value,nv.message()));
+				 }
+			 }else if(value instanceof Long) {
+				 Long val = (Long) value;
+				 if(val< nv.min()) {
+					throw new TVerificationException(String.format("Data value is [%s]-%s",value,nv.message()));
+				 }else if(val > nv.max()){
+					throw new TVerificationException(String.format("Data value is [%s]-%s",value,nv.message()));
+				 }
+			 }
+		 }
+	 }
+	 
+	 
+	 private static void checkStringVerification(StringVerification sv,Object value) {
+		 if(sv != null) {
+				if(sv.notNull()) {
+					if(value == null || "".equals(value)) {
+						throw new TVerificationException(String.format("Data value is [%s]-%s",value,"value can not be empty"));
+					}
+				}else if(!"".equals(sv.blacklistRegular()) && value instanceof CharSequence) {
+					List<String> l = StringUtils.findRegular((CharSequence)value, sv.blacklistRegular());
+					if(l.size() > 0) {
+						throw new TVerificationException(String.format("Data value is [%s]-%s",value,sv.message()));
+					}
+				}else if(!"".equals(sv.blacklistRegular()) && value instanceof CharSequence) {
+					List<String> l = StringUtils.findRegular((CharSequence)value, sv.blacklistRegular());
+					if(l.size() == 0) {
+						throw new TVerificationException(String.format("Data value is [%s]-%s",value,sv.message()));
+					}
+				}
+			}
 	 }
 }
