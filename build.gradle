@@ -36,7 +36,7 @@ artifacts {
 uploadArchives {
     repositories {
         mavenDeployer {
-            repository(url: "http://47.75.97.174:8081/nexus/content/repositories/pr01/") {
+            repository(url: "http://git.z-ip.top:8081/nexus/content/repositories/pr01/") {
                 authentication(userName: "admin", password: "YuanQiao520")
             }
             pom.version = "$project.version"
