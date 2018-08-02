@@ -37,7 +37,7 @@ public interface Query<T> {
 	 * @param vals  符合参数的List结果集
 	 * @throws TSQLException
 	 */
-	public void setListParameter(String name,Collection<Object> vals) throws TSQLException;
+	public void setListParameter(String name,Collection<T> vals) throws TSQLException;
 	/**
 	 * 设置当前时间
 	 * @param name 参数名称

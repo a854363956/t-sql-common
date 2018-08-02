@@ -384,7 +384,7 @@ public class QueryImp<T> implements Query<T> {
 		}
 	}
 	@Override
-	public void setListParameter(String name, Collection<Object> vals) throws TSQLException {
+	public void setListParameter(String name, Collection<T> vals) throws TSQLException {
 		Parames p = new Parames(name, vals, ParamesType.LIST);
 		parames.add(p);
 	}
