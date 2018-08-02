@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Column;
-import javax.sql.rowset.serial.SerialArray;
 
 import t.sql.exception.TSQLException;
 import t.sql.interfaces.DTO;
@@ -384,7 +383,7 @@ public class QueryImp<T> implements Query<T> {
 		}
 	}
 	@Override
-	public void setListParameter(String name, Collection<T> vals) throws TSQLException {
+	public <E>  void setListParameter(String name, Collection<E> vals) throws TSQLException {
 		Parames p = new Parames(name, vals, ParamesType.LIST);
 		parames.add(p);
 	}

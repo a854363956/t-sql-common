@@ -33,19 +33,20 @@ public interface Query<T> {
 	
 	/**
 	 * 设置List参数
+	 * @param <E> 
 	 * @param name  参数名称
 	 * @param vals  符合参数的List结果集
 	 * @throws TSQLException
 	 */
-	public void setListParameter(String name,Collection<T> vals) throws TSQLException;
+	public <E> void setListParameter(String name,Collection<E> vals) throws TSQLException;
 	/**
-	 * 设置当前时间
+	 * 设置当前时间-可能不会带十分秒
 	 * @param name 参数名称
 	 * @param time 时间参数
 	 */
 	public void setTime(String name,Date time);
 	/**
-	 * 设置当前时间
+	 * 设置当前时间-带时分秒
 	 * @param name 参数名称
 	 * @param time 时间参数
 	 */
