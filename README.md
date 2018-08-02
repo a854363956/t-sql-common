@@ -144,7 +144,19 @@ String sql = "update test where id=? ";
 int i = session.nativeDMLSQL(sql,"12345678");
 System.out.println(i);
 ```
-如果需要对原生SQL进行DML的操作支持,那么使用nativeDMLSQL即可,主要参数替换需要采用__?__号的方式进行操作 
+如果需要对原生SQL进行DML的操作支持,那么使用nativeDMLSQL即可,主要参数替换需要采用**?**号的方式进行操作 
 
+##### 7. 对in查询的支持  
+
+```java
+Query<Map<String,Object>> query =sessionFactory.getCurrentSession().createQuery("select * from user_tab_comments where table_name in :table_name", HashMap.class);
+List<Object> d  = new ArrayList<Object>();
+d.add("YW_XJZL");
+d.add("YW_XJZL_0524");
+query.setListParameter("table_name", d);
+List<Map<String, Object>> result = query.list();
+System.out.println(result.size());
+```
+如果需要查询使用in那么采用setListParameter即可进行in查询的支持
 
 

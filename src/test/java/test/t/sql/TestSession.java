@@ -1,5 +1,9 @@
 package test.t.sql;
 
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,7 +41,10 @@ public class TestSession {
 		HikariDataSource ds = new HikariDataSource(config);
 		sf = new SessionFactoryImp(ds);
 	}
-
+	@Test
+	public void testGoogle() throws Exception {
+	
+	}
 	@Test
 	public void testCreate() {
 		test.t.sql.dto.Test t = new test.t.sql.dto.Test();

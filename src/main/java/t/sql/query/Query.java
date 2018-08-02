@@ -1,5 +1,6 @@
 package t.sql.query;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -29,6 +30,14 @@ public interface Query<T> {
 	 * @throws TSQLException
 	 */
 	public void setParameter(String name,Object val) throws TSQLException;
+	
+	/**
+	 * 设置List参数
+	 * @param name  参数名称
+	 * @param vals  符合参数的List结果集
+	 * @throws TSQLException
+	 */
+	public void setListParameter(String name,Collection<Object> vals) throws TSQLException;
 	/**
 	 * 设置当前时间
 	 * @param name 参数名称
