@@ -260,7 +260,12 @@ public class QueryImp<T> implements Query<T> {
 		if(ob instanceof Map) {
 			Map m =(Map)ob;
 			for(int i=0;i<labels.length;i++) {
-				m.put(labels[i], values[i]);
+				// 修复在查询出List<Map<String,Object>> 类型的时候map中含有null类型
+				if(labels[i] != null ) {
+					m.put(labels[i], values[i]);
+				}else {
+					continue;
+				}
 			}
 			return (T)m;
 		}else if(ob instanceof DTO) {
