@@ -1,7 +1,6 @@
 package t.sql.query;
 
 import java.lang.reflect.Field;
-import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -192,7 +191,7 @@ public class QueryImp<T> implements Query<T> {
 				}
 				if(isList == true) {
 					StringBuffer slist = new StringBuffer("(");
-					for(Object o : ((Collection<Object>)val)) {
+					for(@SuppressWarnings("unused") Object o : ((Collection<Object>)val)) {
 						slist.append("?,");
 					}
 					String _qList = slist.substring(0, slist.length()-1)+")";
