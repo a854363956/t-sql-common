@@ -27,7 +27,7 @@ import t.sql.utils.StringUtils;
 public class TestSession {
 	private SessionFactory sf;
 
-	@Before
+	// @Before
 	public void onInit() {
 		HikariConfig config = new HikariConfig();
 		config.setJdbcUrl("jdbc:mysql://localhost:3306/test_t_sql");
@@ -42,8 +42,13 @@ public class TestSession {
 		sf = new SessionFactoryImp(ds);
 	}
 	@Test
-	public void testGoogle() throws Exception {
-	
+	public void testList() throws Exception {
+		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
+		Map<String,Object> m = new HashMap<String,Object>();
+		m.put("ABCD","123");
+		m.put(null,"1234");
+		list.add(m);
+		System.out.println(t.sql.utils.ListUtils.toLowerCaseMapKey(list));
 	}
 	@Test
 	public void testCreate() {
