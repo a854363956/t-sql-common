@@ -59,7 +59,7 @@ public interface Session {
 	/**
 	 * 开启事务管理,并在事务提供的接口里进行操作 无任何返回值
 	 */
-	void transactionVoid( TransactionVoid t);
+	void transactionVoid(TransactionVoid t);
 	/***
 	 * 执行DMLSQL
 	 * @param sql  要执行的SQL语句

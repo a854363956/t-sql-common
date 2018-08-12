@@ -9,7 +9,6 @@ import t.sql.exception.TSQLException;
 import t.sql.interfaces.DTO;
 import t.sql.query.Query;
 import t.sql.query.QueryImp;
-import t.sql.transaction.TransactionObject;
 import t.sql.utils.SqlUtils;
 import t.sql.utils.VerificationUtils;
 /**
@@ -20,7 +19,6 @@ import t.sql.utils.VerificationUtils;
  */
 public class SessionImp implements Session{
 	private Connection connection;
-	private TransactionObject transaction;
 	private SqlUtils sqlUtils;
 	public SessionImp(Connection connection) {
 		this.connection= connection;
@@ -95,7 +93,7 @@ public class SessionImp implements Session{
 	public <T> T transactionObject(t.sql.transaction.TransactionObject<T> t) {
 		try {
 			connection.setAutoCommit(false);
-			T objT =t.execute(this);
+			T objT =t.execute();
 			if(connection.isClosed()) {
 				throw new TSQLException("The connection is closed,Unable commit!");
 			}else {
@@ -123,7 +121,7 @@ public class SessionImp implements Session{
 	public void transactionVoid(t.sql.transaction.TransactionVoid t) {
 		try {
 			connection.setAutoCommit(false);
-			t.execute(this);
+			t.execute();
 			if(connection.isClosed()) {
 				throw new TSQLException("The connection is closed,Unable commit!");
 			}else {

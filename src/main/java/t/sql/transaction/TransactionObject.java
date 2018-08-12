@@ -12,6 +12,6 @@ import t.sql.Session;
  */
 @FunctionalInterface  
 public interface TransactionObject<T> {
-	T execute(Session session) throws SQLException;
+	T execute() throws SQLException;
 }
 
