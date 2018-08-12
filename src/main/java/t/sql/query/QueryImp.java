@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,7 @@ import t.sql.interfaces.DTO;
 import t.sql.utils.StringUtils;
 
 enum ParamesType {
-	TIME, TIMESTAMP, LONG, TEXT, SHORT, INTEGER, FLOAT, OBJECT
+	TIME, TIMESTAMP, LONG, TEXT, SHORT, INTEGER, FLOAT, OBJECT, LIST
 }
 
 class Parames {
@@ -120,8 +121,13 @@ public class QueryImp<T> implements Query<T> {
 
 	@Override
 	public void setParameter(String name, Object val) throws TSQLException {
-		Parames p = new Parames(name, val, ParamesType.OBJECT);
-		parames.add(p);
+		if(val instanceof Collection) {
+			Parames p = new Parames(name, val, ParamesType.LIST);
+			parames.add(p);
+		}else {
+			Parames p = new Parames(name, val, ParamesType.OBJECT);
+			parames.add(p);
+		}
 	}
 
 	@Override
@@ -179,7 +185,26 @@ public class QueryImp<T> implements Query<T> {
 		if (prepareStatementSql == null) {
 			List<String> re = StringUtils.findRegular(sql, ":[a-zA-Z_]+");
 			for (String f : re) {
-				sql = sql.replace(f, "?");
+				boolean isList = false;
+				Object  val = null;
+				for(Parames p:parames) {
+					if((":"+p.getName()).equals(f)) {
+						isList = true;
+						val = p.getValue();
+						break;
+					}
+				}
+				if(isList == true) {
+					StringBuffer slist = new StringBuffer("(");
+					for(@SuppressWarnings("unused") Object o : ((Collection<Object>)val)) {
+						slist.append("?,");
+					}
+					String _qList = slist.substring(0, slist.length()-1)+")";
+					sql =  sql.replace(f, _qList);
+				}else {
+					sql = sql.replace(f, "?");
+				}
+				
 			}
 		}
 		return sql;
@@ -239,7 +264,12 @@ public class QueryImp<T> implements Query<T> {
 		if(ob instanceof Map) {
 			Map m =(Map)ob;
 			for(int i=0;i<labels.length;i++) {
-				m.put(labels[i], values[i]);
+				// 修复在查询出List<Map<String,Object>> 类型的时候map中含有null类型
+				if(labels[i] != null ) {
+					m.put(labels[i], values[i]);
+				}else {
+					continue;
+				}
 			}
 			return (T)m;
 		}else if(ob instanceof DTO) {
@@ -270,43 +300,50 @@ public class QueryImp<T> implements Query<T> {
 	private void setPreparedStatementParames(PreparedStatement ps) throws SQLException {
 		checkParameters();
 		List<String> l = StringUtils.findRegular(getSql(), ":[a-zA-Z_]+");
+		int index = 0;
 		for (int i = 0; i < l.size(); i++) {
 			String name = l.get(i).replace(":", "");
 			for (Parames p : parames) {
 				if (p.getName().equals(name)) {
 					if (p.getType() == ParamesType.OBJECT) {
-						ps.setObject(i + 1, p.getValue());
+						ps.setObject(index + 1, p.getValue());
+						index++;
 					} else if (p.getType() == ParamesType.FLOAT) {
 						if (p.getValue() instanceof Float) {
-							ps.setFloat(i + 1, (Float) p.getValue());
+							ps.setFloat(index + 1, (Float) p.getValue());
+							index++;
 						} else {
 							throw new TSQLException(
 									String.format("Incorrect data type! Parameter fields[%s]", name));
 						}
 					} else if (p.getType() == ParamesType.INTEGER) {
 						if (p.getValue() instanceof Integer) {
-							ps.setInt(i + 1, (Integer) p.getValue());
+							ps.setInt(index + 1, (Integer) p.getValue());
+							index++;
 						} else {
 							throw new TSQLException(
 									String.format("Incorrect data type! Parameter fields[%s]", name));
 						}
 					} else if (p.getType() == ParamesType.SHORT) {
 						if (p.getValue() instanceof Short) {
-							ps.setShort(i + 1, (Short) p.getValue());
+							ps.setShort(index + 1, (Short) p.getValue());
+							index++;
 						} else {
 							throw new TSQLException(
 									String.format("Incorrect data type! Parameter fields[%s]", name));
 						}
 					} else if (p.getType() == ParamesType.TEXT) {
 						if (p.getValue() instanceof String) {
-							ps.setString(i + 1, (String) p.getValue());
+							ps.setString(index + 1, (String) p.getValue());
+							index++;
 						} else {
 							throw new TSQLException(
 									String.format("Incorrect data type! Parameter fields[%s]", name));
 						}
 					} else if (p.getType() == ParamesType.LONG) {
 						if (p.getValue() instanceof Long) {
-							ps.setLong(i + 1, (Long) p.getValue());
+							ps.setLong(index + 1, (Long) p.getValue());
+							index++;
 						} else {
 							throw new TSQLException(
 									String.format("Incorrect data type! Parameter fields[%s]", name));
@@ -314,7 +351,8 @@ public class QueryImp<T> implements Query<T> {
 					} else if (p.getType() == ParamesType.TIMESTAMP) {
 						if (p.getValue() instanceof Date) {
 							java.sql.Timestamp timestamp = new Timestamp(((Date) p.getValue()).getTime());
-							ps.setTimestamp(i + 1, timestamp);
+							ps.setTimestamp(index + 1, timestamp);
+							index++;
 						} else {
 							throw new TSQLException(
 									String.format("Incorrect data type! Parameter fields[%s]", name));
@@ -322,11 +360,23 @@ public class QueryImp<T> implements Query<T> {
 					} else if (p.getType() == ParamesType.TIME) {
 						if (p.getValue() instanceof Date) {
 							java.sql.Time time = new Time(((Date) p.getValue()).getTime());
-							ps.setTime(i + 1, time);
+							ps.setTime(index + 1, time);
+							index++;
 						} else {
 							throw new TSQLException(
 									String.format("Incorrect data type! Parameter fields[%s]", name));
 						}
+					}else if(p.getType() == ParamesType.LIST) {
+						if(p.getValue() == null ) {
+							throw new TSQLException(
+									String.format(" Parameter[%s] value cannot be empty ", name));
+						}
+						Object[] parameter= ((Collection<Object>)p.getValue()).toArray();
+						for(Object o :parameter) {
+							ps.setObject(index+1,o);
+							index++;
+						}
+					    
 					}
 				}
 			}
@@ -340,6 +390,11 @@ public class QueryImp<T> implements Query<T> {
 				throw new TSQLException(String.format("Invalid parameters [:%s]", ps.getName()));
 			}
 		}
+	}
+	@Override
+	public <E>  void setListParameter(String name, Collection<E> vals) throws TSQLException {
+		Parames p = new Parames(name, vals, ParamesType.LIST);
+		parames.add(p);
 	}
 
 }

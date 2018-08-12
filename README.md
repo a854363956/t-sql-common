@@ -144,7 +144,30 @@ String sql = "update test where id=? ";
 int i = session.nativeDMLSQL(sql,"12345678");
 System.out.println(i);
 ```
-如果需要对原生SQL进行DML的操作支持,那么使用nativeDMLSQL即可,主要参数替换需要采用__?__号的方式进行操作 
+如果需要对原生SQL进行DML的操作支持,那么使用nativeDMLSQL即可,主要参数替换需要采用**?**号的方式进行操作 
 
+##### 7. 对in查询的支持  
 
+```java
+Query<Map<String,Object>> query =sessionFactory.getCurrentSession().createQuery("select * from user_tab_comments where table_name in :table_name", HashMap.class);
+List<Object> d  = new ArrayList<Object>();
+d.add("YW_XJZL");
+d.add("YW_XJZL_0524");
+query.setListParameter("table_name", d);
+List<Map<String, Object>> result = query.list();
+System.out.println(result.size());
+```
+如果需要查询使用in那么采用setListParameter即可进行in查询的支持
+
+##### 8. 使用ListUtils.toLowerCaseMapKey 进行对List结果中的Map的key进行转换
+
+```java
+List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
+Map<String,Object> m = new HashMap<String,Object>();
+m.put("ABCD","123");
+m.put(null,"1234");
+list.add(m);
+System.out.println(t.sql.utils.ListUtils.toLowerCaseMapKey(list));
+```
+在ListUtils中提供了对List操作方便的工具类,有兴趣的可以看看此类的方法
 
