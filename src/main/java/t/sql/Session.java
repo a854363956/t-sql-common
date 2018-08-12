@@ -5,7 +5,8 @@ import java.util.Collection;
 
 import t.sql.interfaces.DTO;
 import t.sql.query.Query;
-import t.sql.transaction.Transaction;
+import t.sql.transaction.TransactionObject;
+import t.sql.transaction.TransactionVoid;
 
 /**
  * 用来处理当前sql查询的工具类
@@ -51,16 +52,20 @@ public interface Session {
 	 */
 	<T> Query<T> createQuery(String sql,Class<?> clzz);
 	/**
-	 * 开启事务管理
-	 * @return
+	 * 开启事务管理,并在事务提供的接口里进行操作
+	 * @return 可以返回自定义数据
 	 */
-	Transaction openTransaction();
+	<T> T transactionObject(TransactionObject<T> t);
+	/**
+	 * 开启事务管理,并在事务提供的接口里进行操作 无任何返回值
+	 */
+	void transactionVoid( TransactionVoid t);
 	/***
 	 * 执行DMLSQL
 	 * @param sql  要执行的SQL语句
 	 * @param obj  要替换的参数
 	 * @return
 	 */
-	int nativeDMLSQL(String sql,Object... obj); 
+	int nativeDMLSQL(String sql,Object... obj);
 
 }
