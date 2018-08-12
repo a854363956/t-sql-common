@@ -159,4 +159,15 @@ System.out.println(result.size());
 ```
 如果需要查询使用in那么采用setListParameter即可进行in查询的支持
 
+##### 8. 使用ListUtils.toLowerCaseMapKey 进行对List结果中的Map的key进行转换
+
+```java
+List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();
+Map<String,Object> m = new HashMap<String,Object>();
+m.put("ABCD","123");
+m.put(null,"1234");
+list.add(m);
+System.out.println(t.sql.utils.ListUtils.toLowerCaseMapKey(list));
+```
+在ListUtils中提供了对List操作方便的工具类,有兴趣的可以看看此类的方法
 
