@@ -1,16 +1,10 @@
 package test.t.sql;
 
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import com.zaxxer.hikari.HikariConfig;
@@ -21,8 +15,6 @@ import t.sql.SessionFactory;
 import t.sql.SessionFactoryImp;
 import t.sql.interfaces.DTO;
 import t.sql.query.Query;
-import t.sql.transaction.Transaction;
-import t.sql.utils.StringUtils;
 
 public class TestSession {
 	private SessionFactory sf;
@@ -72,23 +64,7 @@ public class TestSession {
 		sf.getCurrentSession().delete(t);
 	}
 
-	@Test // 152秒
-	public void testBigCreate() {
-		Date d = new Date();
-		List<DTO> datas = new ArrayList<DTO>();
-		for (int i = 0; i < 10000; i++) {
-			test.t.sql.dto.Test t = new test.t.sql.dto.Test();
-			t.setName("name");
-			t.setValue("value");
-			t.setCommen("commen");
-			datas.add(t);
-		}
-		Session session = sf.getCurrentSession();
-		Transaction t = session.openTransaction();
-		session.createBatch(datas);
-		t.commit();
-		System.out.println((new Date().getTime() - d.getTime()));
-	}
+
 
 	@Test
 	public void testBigUpdate() {
@@ -115,17 +91,6 @@ public class TestSession {
 		sf.getCurrentSession().create(t);
 		t.setCommen("test");
 		sf.getCurrentSession().update(t);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testDeleteBatch() {
-		Session session = sf.getCurrentSession();
-		Transaction t = session.openTransaction();
-		Query<test.t.sql.dto.Test> q = session.createQuery("select * from test", test.t.sql.dto.Test.class);
-		List<?> list = q.list();
-		session.deleteBatch((List<DTO>) list);
-		t.commit();
 	}
 
 

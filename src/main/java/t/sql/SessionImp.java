@@ -9,7 +9,7 @@ import t.sql.exception.TSQLException;
 import t.sql.interfaces.DTO;
 import t.sql.query.Query;
 import t.sql.query.QueryImp;
-import t.sql.transaction.Transaction;
+import t.sql.transaction.TransactionObject;
 import t.sql.utils.SqlUtils;
 import t.sql.utils.VerificationUtils;
 /**
@@ -20,7 +20,7 @@ import t.sql.utils.VerificationUtils;
  */
 public class SessionImp implements Session{
 	private Connection connection;
-	private Transaction transaction;
+	private TransactionObject transaction;
 	private SqlUtils sqlUtils;
 	public SessionImp(Connection connection) {
 		this.connection= connection;
@@ -47,15 +47,6 @@ public class SessionImp implements Session{
 	@Override
 	public <T> Query<T> createQuery(String sql,Class<?> clzz) {
 		return new QueryImp<T>(sql,connection,clzz);
-	}
-
-	@Override
-	public Transaction openTransaction() {
-		if(transaction == null) {
-			return new Transaction(connection);
-		}else {
-			return this.transaction;
-		}
 	}
 
 	@Override
@@ -99,5 +90,60 @@ public class SessionImp implements Session{
 	public void deleteBatch(Collection<DTO> datas) {
 		sqlUtils.toDeleteSqlDtoJDBCBatch(datas, connection);
 	}
+	
+	@Override
+	public <T> T transactionObject(t.sql.transaction.TransactionObject<T> t) {
+		try {
+			connection.setAutoCommit(false);
+			T objT =t.execute(this);
+			if(connection.isClosed()) {
+				throw new TSQLException("The connection is closed,Unable commit!");
+			}else {
+				connection.commit();
+			}
+			return objT;
+		} catch (Exception e) {
+			throw new TSQLException(e);
+		} finally {
+			try {
+				if(connection.isClosed()) {
+					throw new TSQLException("The connection is closed,Unable commit!");
+				}else {
+					connection.rollback();
+				}
+				connection.setAutoCommit(true);
+			} catch (Exception e2) {
+				throw new TSQLException(e2);
+			}
+			
+		}
 
+	}
+	@Override
+	public void transactionVoid(t.sql.transaction.TransactionVoid t) {
+		try {
+			connection.setAutoCommit(false);
+			t.execute(this);
+			if(connection.isClosed()) {
+				throw new TSQLException("The connection is closed,Unable commit!");
+			}else {
+				connection.commit();
+			}
+		} catch (Exception e) {
+			throw new TSQLException(e);
+		} finally {
+			try {
+				if(connection.isClosed()) {
+					throw new TSQLException("The connection is closed,Unable commit!");
+				}else {
+					connection.rollback();
+				}
+				connection.setAutoCommit(true);
+			} catch (Exception e2) {
+				throw new TSQLException(e2);
+			}
+			
+		}
+
+	}
 }
