@@ -257,6 +257,15 @@ public class QueryImp<T> implements Query<T> {
 	public Class<?> getTClass() {
         return this.clzz;
 	}
+	
+	/**
+	 * 要进行数据label转换的接口,可以继承此类来进行重写此方法的实现
+	 * @param label  实际的Label值
+	 * @return
+	 */
+	protected String  convertLabel(String label) {
+		return label;
+	}
 	@SuppressWarnings("rawtypes")
 	private T convert(String[] labels, Object[] values) throws InstantiationException, IllegalAccessException {
 		Class<?> tClass  = getTClass();
@@ -264,9 +273,9 @@ public class QueryImp<T> implements Query<T> {
 		if(ob instanceof Map) {
 			Map m =(Map)ob;
 			for(int i=0;i<labels.length;i++) {
-				// 修复在查询出List<Map<String,Object>> 类型的时候map中含有null类型
+				// fix 修复在查询出List<Map<String,Object>> 类型的时候map中含有null类型
 				if(labels[i] != null ) {
-					m.put(labels[i], values[i]);
+					m.put(convertLabel(labels[i]), values[i]);
 				}else {
 					continue;
 				}
@@ -286,7 +295,7 @@ public class QueryImp<T> implements Query<T> {
 					
 					if(name.equals(labels[i])) {
 						f.setAccessible(true);
-						f.set(ob, values[i]);
+						f.set(ob,values[i]);
 					}
 				}
 			}

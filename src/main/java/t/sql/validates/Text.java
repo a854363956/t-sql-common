@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RUNTIME)
 @Target(FIELD)
-public @interface StringVerification{
+public @interface Text{
 	/**
 	 * 当前实体中是否可以为空
 	 * @return  true表示不为空, false表示可以为空
