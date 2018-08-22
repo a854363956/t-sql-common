@@ -135,14 +135,16 @@ public class SqlUtils {
 			StringBuffer set = new StringBuffer(" set ");
 			for(Field field :fields) {
 				Column column =field.getDeclaredAnnotation(Column.class);
-				String name = column.name();
-				if(name.equals("")) {
-					name=field.getName();
+				if(column != null) {
+					String name = column.name();
+					if(name.equals("")) {
+						name=field.getName();
+					}
+					set.append(name);
+					set.append("=:");
+					set.append(name);
+					set.append(",");
 				}
-				set.append(name);
-				set.append("=:");
-				set.append(name);
-				set.append(",");
 			}
 			StringBuffer where = getWhereById(fields);
 			String _set = set.substring(0, set.length()-1);
@@ -187,15 +189,17 @@ public class SqlUtils {
 			for(Field field :fields) {
 				Id id=field.getDeclaredAnnotation(Id.class);
 				Column column =field.getDeclaredAnnotation(Column.class);
-				if(id!=null) {
-					field.setAccessible(true);
+				if(column != null ) {
+					if(id!=null) {
+						field.setAccessible(true);
+					}
+					String name = column.name();
+					if(name.equals("")) {
+						name=field.getName();
+					}
+					idName = name;
+					break;
 				}
-				String name = column.name();
-				if(name.equals("")) {
-					name=field.getName();
-				}
-				idName = name;
-				break;
 			}
 			String sql =String.format(" delete  from %s where %s=?", tableName,idName);
 			ps =connection.prepareStatement(sql);
@@ -243,15 +247,17 @@ public class SqlUtils {
 			
 			for(Field field :fields) {
 				Column column =field.getDeclaredAnnotation(Column.class);
-				String name = column.name();
-				if(name.equals("")) {
-					name=field.getName();
+				if(column != null ) {
+					String name = column.name();
+					if(name.equals("")) {
+						name=field.getName();
+					}
+					columnName.append(name);
+					columnName.append(",");
+					columnValue.append(":");
+					columnValue.append(name);
+					columnValue.append(",");
 				}
-				columnName.append(name);
-				columnName.append(",");
-				columnValue.append(":");
-				columnValue.append(name);
-				columnValue.append(",");
 			}
 			String _columnName=columnName.substring(0, columnName.length()-1);
 			String _columnValue=columnValue.substring(0, columnValue.length()-1);
@@ -312,19 +318,21 @@ public class SqlUtils {
 			for(Field field :fields) {
 				Id id=field.getDeclaredAnnotation(Id.class);
 				Column column =field.getDeclaredAnnotation(Column.class);
-				if(id!=null) {
-					field.setAccessible(true);
-					field.set(dto, StringUtils.getUUID());
+				if(column != null) {
+					if(id!=null) {
+						field.setAccessible(true);
+						field.set(dto, StringUtils.getUUID());
+					}
+					String name = column.name();
+					if(name.equals("")) {
+						name=field.getName();
+					}
+					columnName.append(name);
+					columnName.append(",");
+					columnValue.append(":");
+					columnValue.append(name);
+					columnValue.append(",");
 				}
-				String name = column.name();
-				if(name.equals("")) {
-					name=field.getName();
-				}
-				columnName.append(name);
-				columnName.append(",");
-				columnValue.append(":");
-				columnValue.append(name);
-				columnValue.append(",");
 			}
 			String _columnName=columnName.substring(0, columnName.length()-1);
 			String _columnValue=columnValue.substring(0, columnValue.length()-1);

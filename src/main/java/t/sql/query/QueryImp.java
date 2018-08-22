@@ -189,7 +189,11 @@ public class QueryImp<T> implements Query<T> {
 				Object  val = null;
 				for(Parames p:parames) {
 					if((":"+p.getName()).equals(f)) {
-						isList = true;
+						// 修复将其他类型判断为List类型的BUG START
+						if(p.getType().equals(ParamesType.LIST)) {
+							isList = true;
+						}
+						// END 
 						val = p.getValue();
 						break;
 					}
@@ -286,17 +290,22 @@ public class QueryImp<T> implements Query<T> {
 			for(int i=0;i<labels.length;i++) {
 				for(Field f :fields) {
 					Column column =f.getDeclaredAnnotation(Column.class);
-					String name ="";
-					if("".equals(column.name())) {
-						name =  f.getName();
-					}else {
-						name=column.name();
+					// 修复如果没有Column注解将导致报空指针异常的BUG start
+					if(column != null) {
+						String name ="";
+						if("".equals(column.name())) {
+							name =  f.getName();
+						}else {
+							name=column.name();
+						}
+						
+						if(name.equals(labels[i])) {
+							f.setAccessible(true);
+							f.set(ob,values[i]);
+						}
 					}
+					// END
 					
-					if(name.equals(labels[i])) {
-						f.setAccessible(true);
-						f.set(ob,values[i]);
-					}
 				}
 			}
 			return (T) ob;
