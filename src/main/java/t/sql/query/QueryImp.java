@@ -235,8 +235,8 @@ public class QueryImp<T> implements Query<T> {
 			String[] labels = new String[count + 1];
 			Object[] values = new Object[count + 1];
 			for (int i = 0; i < count; i++) {
-				String label = rsm.getColumnLabel(i);
-				Object value = rs.getObject(i);
+				String label = rsm.getColumnLabel(i+1);
+				Object value = rs.getObject(i+1);
 				labels[i] = label;
 				values[i] = value;
 			}
