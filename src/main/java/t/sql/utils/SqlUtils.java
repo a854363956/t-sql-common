@@ -321,7 +321,10 @@ public class SqlUtils {
 				if(column != null) {
 					if(id!=null) {
 						field.setAccessible(true);
-						field.set(dto, StringUtils.getUUID());
+						// 如果为空,才会设置Id字段的值
+						if(field.get(dto) == null) {
+							field.set(dto, StringUtils.getUUID());
+						}
 					}
 					String name = column.name();
 					if(name.equals("")) {
