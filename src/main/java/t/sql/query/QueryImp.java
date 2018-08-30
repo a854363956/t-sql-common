@@ -215,7 +215,8 @@ public class QueryImp<T> implements Query<T> {
 	}
 
 	private String getSql() {
-		return sql;
+		// 去除多余的SQL注释
+		return sql.replaceAll("/\\*.*\\*/","");
 	}
 
 	@Override
@@ -326,10 +327,12 @@ public class QueryImp<T> implements Query<T> {
 					if (p.getType() == ParamesType.OBJECT) {
 						ps.setObject(index + 1, p.getValue());
 						index++;
+						break;
 					} else if (p.getType() == ParamesType.FLOAT) {
 						if (p.getValue() instanceof Float) {
 							ps.setFloat(index + 1, (Float) p.getValue());
 							index++;
+							break;
 						} else {
 							throw new TSQLException(
 									String.format("Incorrect data type! Parameter fields[%s]", name));
@@ -338,6 +341,7 @@ public class QueryImp<T> implements Query<T> {
 						if (p.getValue() instanceof Integer) {
 							ps.setInt(index + 1, (Integer) p.getValue());
 							index++;
+							break;
 						} else {
 							throw new TSQLException(
 									String.format("Incorrect data type! Parameter fields[%s]", name));
@@ -346,6 +350,7 @@ public class QueryImp<T> implements Query<T> {
 						if (p.getValue() instanceof Short) {
 							ps.setShort(index + 1, (Short) p.getValue());
 							index++;
+							break;
 						} else {
 							throw new TSQLException(
 									String.format("Incorrect data type! Parameter fields[%s]", name));
@@ -354,6 +359,7 @@ public class QueryImp<T> implements Query<T> {
 						if (p.getValue() instanceof String) {
 							ps.setString(index + 1, (String) p.getValue());
 							index++;
+							break;
 						} else {
 							throw new TSQLException(
 									String.format("Incorrect data type! Parameter fields[%s]", name));
@@ -362,6 +368,7 @@ public class QueryImp<T> implements Query<T> {
 						if (p.getValue() instanceof Long) {
 							ps.setLong(index + 1, (Long) p.getValue());
 							index++;
+							break;
 						} else {
 							throw new TSQLException(
 									String.format("Incorrect data type! Parameter fields[%s]", name));
@@ -371,6 +378,7 @@ public class QueryImp<T> implements Query<T> {
 							java.sql.Timestamp timestamp = new Timestamp(((Date) p.getValue()).getTime());
 							ps.setTimestamp(index + 1, timestamp);
 							index++;
+							break;
 						} else {
 							throw new TSQLException(
 									String.format("Incorrect data type! Parameter fields[%s]", name));
@@ -380,6 +388,7 @@ public class QueryImp<T> implements Query<T> {
 							java.sql.Time time = new Time(((Date) p.getValue()).getTime());
 							ps.setTime(index + 1, time);
 							index++;
+							break;
 						} else {
 							throw new TSQLException(
 									String.format("Incorrect data type! Parameter fields[%s]", name));
@@ -394,7 +403,7 @@ public class QueryImp<T> implements Query<T> {
 							ps.setObject(index+1,o);
 							index++;
 						}
-					    
+						break;
 					}
 				}
 			}
