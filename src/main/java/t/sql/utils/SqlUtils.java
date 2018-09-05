@@ -122,7 +122,7 @@ public class SqlUtils {
 		}
 		
 	}
-	public int[] toUpdateSqlDtoJDBCBatch(Collection<DTO> dtos,Connection connection) {
+	public <T extends DTO> int[] toUpdateSqlDtoJDBCBatch(Collection<T> dtos,Connection connection) {
 		PreparedStatement ps  = null;
 		try {
 			Class<?> clzz = dtos.iterator().next().getClass();
@@ -176,7 +176,7 @@ public class SqlUtils {
 			}
 		}
 	}
-	public int[] toDeleteSqlDtoJDBCBatch(Collection<DTO> dtos,Connection connection) {
+	public <T extends DTO> int[] toDeleteSqlDtoJDBCBatch(Collection<T> dtos,Connection connection) {
 		PreparedStatement ps  = null;
 		try {
 			Class<?> clzz = dtos.iterator().next().getClass();
@@ -232,7 +232,7 @@ public class SqlUtils {
 		
 		
 	}
-	public int[] toCreateSqlDtoJDBCBatch(Collection<DTO> dtos,Connection connection) {
+	public <T extends DTO> int[] toCreateSqlDtoJDBCBatch(Collection<T> dtos,Connection connection) {
 		PreparedStatement ps  = null;
 		try {
 			Class<?> clzz = dtos.iterator().next().getClass();

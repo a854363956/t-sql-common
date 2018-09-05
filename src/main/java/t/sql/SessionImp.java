@@ -48,19 +48,23 @@ public class SessionImp implements Session{
 	}
 
 	@Override
-	public void updateBatch(Collection<DTO> datas) {
+	public <T extends DTO> void updateBatch(Collection<T> datas) {
 		for(DTO dto :datas) {
 			VerificationUtils.check(dto);
 		}
-		sqlUtils.toUpdateSqlDtoJDBCBatch(datas, connection);
+		if(datas.size() != 0) {
+			sqlUtils.toUpdateSqlDtoJDBCBatch(datas, connection);
+		}
 	}
 	
 	@Override
-	public void createBatch(Collection<DTO> datas) {
+	public <T extends DTO> void createBatch(Collection<T> datas) {
 		for(DTO dto :datas) {
 			VerificationUtils.check(dto);
 		}
-		sqlUtils.toCreateSqlDtoJDBCBatch(datas, connection);
+		if(datas.size() != 0) {
+			sqlUtils.toCreateSqlDtoJDBCBatch(datas, connection);
+		}
 	}
 
 	@Override
@@ -85,8 +89,10 @@ public class SessionImp implements Session{
 		}
 	}
 	@Override
-	public void deleteBatch(Collection<DTO> datas) {
-		sqlUtils.toDeleteSqlDtoJDBCBatch(datas, connection);
+	public <T extends DTO> void deleteBatch(Collection<T> datas) {
+		if(datas.size() != 0) {
+			sqlUtils.toDeleteSqlDtoJDBCBatch(datas, connection);
+		}
 	}
 	
 	@Override
