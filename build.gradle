@@ -9,6 +9,7 @@
 // Apply the java-library plugin to add support for Java Library
 group 'ratel'
 version '0.3.10'
+
 def artifactId = 't-sql-common'
 apply plugin: 'java-library'
 apply plugin: 'maven'

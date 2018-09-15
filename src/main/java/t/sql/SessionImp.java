@@ -19,6 +19,7 @@ import t.sql.utils.VerificationUtils;
  */
 public class SessionImp implements Session{
 	private Connection connection;
+
 	private SqlUtils sqlUtils;
 	public SessionImp(Connection connection) {
 		this.connection= connection;

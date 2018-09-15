@@ -65,7 +65,6 @@ public class TestSession {
 		sf.getCurrentSession().delete(t);
 	}
 
-
 	@Test
 	public void testBigUpdate() throws SQLException {
 		test.t.sql.dto.Test t = new test.t.sql.dto.Test();

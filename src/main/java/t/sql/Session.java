@@ -67,6 +67,5 @@ public interface Session {
 	 * @return
 	 */
 	int nativeDMLSQL(String sql,Object... obj);
-	
 
 }
