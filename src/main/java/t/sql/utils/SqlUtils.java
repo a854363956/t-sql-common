@@ -398,6 +398,10 @@ public class SqlUtils {
 				where.append(ids.get(i));
 			}
 		}
+		if(where.toString().equals("") ) {
+			throw new TSQLException("[@Id] notes do not exist entities.");
+		}
+		
 		return where;
 	}
 }
