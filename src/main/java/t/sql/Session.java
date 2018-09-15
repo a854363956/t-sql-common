@@ -33,17 +33,17 @@ public interface Session {
 	/**
 	 *批量更新
 	 */
-	void updateBatch(Collection<DTO> datas);
+	<T extends DTO> void updateBatch(Collection<T> datas);
 	/**
 	 * 批量创建数据
 	 * @param datas 要创建的数据,必须实现DTO的接口
 	 */
-	void createBatch(Collection<DTO> datas);
+	<T extends DTO> void createBatch(Collection<T> datas);
 	/**
 	 * 批量删除数据
 	 * @param datas 要删除的数据,必须实现DTO的接口
 	 */
-	void deleteBatch(Collection<DTO> datas);
+	<T extends DTO> void deleteBatch(Collection<T> datas);
 	/**
 	 * 创建查询对象
 	 * @param sql  要查询的sql
@@ -59,7 +59,7 @@ public interface Session {
 	/**
 	 * 开启事务管理,并在事务提供的接口里进行操作 无任何返回值
 	 */
-	void transactionVoid( TransactionVoid t);
+	void transactionVoid(TransactionVoid t);
 	/***
 	 * 执行DMLSQL
 	 * @param sql  要执行的SQL语句

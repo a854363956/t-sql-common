@@ -189,7 +189,11 @@ public class QueryImp<T> implements Query<T> {
 				Object  val = null;
 				for(Parames p:parames) {
 					if((":"+p.getName()).equals(f)) {
-						isList = true;
+						// 修复将其他类型判断为List类型的BUG START
+						if(p.getType().equals(ParamesType.LIST)) {
+							isList = true;
+						}
+						// END 
 						val = p.getValue();
 						break;
 					}
@@ -211,7 +215,8 @@ public class QueryImp<T> implements Query<T> {
 	}
 
 	private String getSql() {
-		return sql;
+		// 去除多余的SQL注释
+		return sql.replaceAll("/\\*.*\\*/","");
 	}
 
 	@Override
@@ -231,8 +236,8 @@ public class QueryImp<T> implements Query<T> {
 			String[] labels = new String[count + 1];
 			Object[] values = new Object[count + 1];
 			for (int i = 0; i < count; i++) {
-				String label = rsm.getColumnLabel(i);
-				Object value = rs.getObject(i);
+				String label = rsm.getColumnLabel(i+1);
+				Object value = rs.getObject(i+1);
 				labels[i] = label;
 				values[i] = value;
 			}
@@ -257,6 +262,15 @@ public class QueryImp<T> implements Query<T> {
 	public Class<?> getTClass() {
         return this.clzz;
 	}
+	
+	/**
+	 * 要进行数据label转换的接口,可以继承此类来进行重写此方法的实现
+	 * @param label  实际的Label值
+	 * @return
+	 */
+	protected String  convertLabel(String label) {
+		return label;
+	}
 	@SuppressWarnings("rawtypes")
 	private T convert(String[] labels, Object[] values) throws InstantiationException, IllegalAccessException {
 		Class<?> tClass  = getTClass();
@@ -264,9 +278,9 @@ public class QueryImp<T> implements Query<T> {
 		if(ob instanceof Map) {
 			Map m =(Map)ob;
 			for(int i=0;i<labels.length;i++) {
-				// 修复在查询出List<Map<String,Object>> 类型的时候map中含有null类型
+				// fix 修复在查询出List<Map<String,Object>> 类型的时候map中含有null类型
 				if(labels[i] != null ) {
-					m.put(labels[i], values[i]);
+					m.put(convertLabel(labels[i]), values[i]);
 				}else {
 					continue;
 				}
@@ -277,17 +291,22 @@ public class QueryImp<T> implements Query<T> {
 			for(int i=0;i<labels.length;i++) {
 				for(Field f :fields) {
 					Column column =f.getDeclaredAnnotation(Column.class);
-					String name ="";
-					if("".equals(column.name())) {
-						name =  f.getName();
-					}else {
-						name=column.name();
+					// 修复如果没有Column注解将导致报空指针异常的BUG start
+					if(column != null) {
+						String name ="";
+						if("".equals(column.name())) {
+							name =  f.getName();
+						}else {
+							name=column.name();
+						}
+						
+						if(name.equals(labels[i])) {
+							f.setAccessible(true);
+							f.set(ob,values[i]);
+						}
 					}
+					// END
 					
-					if(name.equals(labels[i])) {
-						f.setAccessible(true);
-						f.set(ob, values[i]);
-					}
 				}
 			}
 			return (T) ob;
@@ -308,10 +327,12 @@ public class QueryImp<T> implements Query<T> {
 					if (p.getType() == ParamesType.OBJECT) {
 						ps.setObject(index + 1, p.getValue());
 						index++;
+						break;
 					} else if (p.getType() == ParamesType.FLOAT) {
 						if (p.getValue() instanceof Float) {
 							ps.setFloat(index + 1, (Float) p.getValue());
 							index++;
+							break;
 						} else {
 							throw new TSQLException(
 									String.format("Incorrect data type! Parameter fields[%s]", name));
@@ -320,6 +341,7 @@ public class QueryImp<T> implements Query<T> {
 						if (p.getValue() instanceof Integer) {
 							ps.setInt(index + 1, (Integer) p.getValue());
 							index++;
+							break;
 						} else {
 							throw new TSQLException(
 									String.format("Incorrect data type! Parameter fields[%s]", name));
@@ -328,6 +350,7 @@ public class QueryImp<T> implements Query<T> {
 						if (p.getValue() instanceof Short) {
 							ps.setShort(index + 1, (Short) p.getValue());
 							index++;
+							break;
 						} else {
 							throw new TSQLException(
 									String.format("Incorrect data type! Parameter fields[%s]", name));
@@ -336,6 +359,7 @@ public class QueryImp<T> implements Query<T> {
 						if (p.getValue() instanceof String) {
 							ps.setString(index + 1, (String) p.getValue());
 							index++;
+							break;
 						} else {
 							throw new TSQLException(
 									String.format("Incorrect data type! Parameter fields[%s]", name));
@@ -344,6 +368,7 @@ public class QueryImp<T> implements Query<T> {
 						if (p.getValue() instanceof Long) {
 							ps.setLong(index + 1, (Long) p.getValue());
 							index++;
+							break;
 						} else {
 							throw new TSQLException(
 									String.format("Incorrect data type! Parameter fields[%s]", name));
@@ -353,6 +378,7 @@ public class QueryImp<T> implements Query<T> {
 							java.sql.Timestamp timestamp = new Timestamp(((Date) p.getValue()).getTime());
 							ps.setTimestamp(index + 1, timestamp);
 							index++;
+							break;
 						} else {
 							throw new TSQLException(
 									String.format("Incorrect data type! Parameter fields[%s]", name));
@@ -362,6 +388,7 @@ public class QueryImp<T> implements Query<T> {
 							java.sql.Time time = new Time(((Date) p.getValue()).getTime());
 							ps.setTime(index + 1, time);
 							index++;
+							break;
 						} else {
 							throw new TSQLException(
 									String.format("Incorrect data type! Parameter fields[%s]", name));
@@ -376,7 +403,7 @@ public class QueryImp<T> implements Query<T> {
 							ps.setObject(index+1,o);
 							index++;
 						}
-					    
+						break;
 					}
 				}
 			}

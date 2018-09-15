@@ -5,8 +5,8 @@ import java.util.List;
 
 import t.sql.exception.TVerificationException;
 import t.sql.interfaces.DTO;
-import t.sql.validates.NumberVerification;
-import t.sql.validates.StringVerification;
+import t.sql.validates.Number;
+import t.sql.validates.Text;
 /**
  * 校验实体的工具类
  * @author zhangj
@@ -24,8 +24,8 @@ public class VerificationUtils {
 			for(Field field : fields) {
 				field.setAccessible(true);
 				Object value =field.get(dto);
-				StringVerification v = field.getAnnotation(StringVerification.class);
-				NumberVerification nv = field.getAnnotation(NumberVerification.class);
+				Text v = field.getAnnotation(Text.class);
+				Number nv = field.getAnnotation(Number.class);
 				if(v != null ) {
 					// 检查字符串是否符合校验
 					checkStringVerification(v,value);
@@ -41,7 +41,7 @@ public class VerificationUtils {
 		}
 	 }
 	 
-	 private static void checkNumberVerification(NumberVerification nv ,Object value) {
+	 private static void checkNumberVerification(Number nv ,Object value) {
 		 if(nv != null) {
 			 if(nv.notNull()) {
 				 if(value == null || "".equals(value)) {
@@ -66,7 +66,7 @@ public class VerificationUtils {
 	 }
 	 
 	 
-	 private static void checkStringVerification(StringVerification sv,Object value) {
+	 private static void checkStringVerification(Text sv,Object value) {
 		 if(sv != null) {
 				if(sv.notNull()) {
 					if(value == null || "".equals(value)) {

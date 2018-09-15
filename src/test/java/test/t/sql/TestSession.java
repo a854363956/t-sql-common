@@ -1,5 +1,6 @@
 package test.t.sql;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,10 +65,8 @@ public class TestSession {
 		sf.getCurrentSession().delete(t);
 	}
 
-
-
 	@Test
-	public void testBigUpdate() {
+	public void testBigUpdate() throws SQLException {
 		test.t.sql.dto.Test t = new test.t.sql.dto.Test();
 		t.setId("id");
 		t.setName("name");

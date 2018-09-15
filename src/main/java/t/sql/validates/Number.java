@@ -16,12 +16,12 @@ import java.lang.annotation.Target;
  */
 @Retention(RUNTIME)
 @Target({ FIELD })
-public @interface NumberVerification {
+public @interface Number {
 	/**
 	 * 如果出现错误,抛出的异常提示信息
 	 * @return  返回要抛出的信息
 	 */
-	String  message();
+	Text  message();
 	/**
 	 * 当前实体中是否可以为空
 	 * @return  true表示不为空, false表示可以为空

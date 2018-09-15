@@ -1,9 +1,10 @@
 package t.sql;
 
 
-import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
 
-import t.sql.exception.TSQLException;
+import javax.sql.DataSource;
 
 public class SessionFactoryImp implements SessionFactory{
 	private DataSource ds;
@@ -19,8 +20,18 @@ public class SessionFactoryImp implements SessionFactory{
 				session.set(new SessionImp(ds.getConnection()));
 			}
 			return session.get();
-		} catch (Exception e) {
-			throw new TSQLException(e);
+		} catch (SQLException e) {
+			throw new t.sql.exception.TSQLException(e);
+		}
+		
+	}
+
+	@Override
+	public Connection openConnection()  {
+		try {
+			return ds.getConnection();
+		} catch (SQLException e) {
+			throw new t.sql.exception.TSQLException(e);
 		}
 	}
 

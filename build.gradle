@@ -8,7 +8,8 @@
 
 // Apply the java-library plugin to add support for Java Library
 group 'ratel'
-version '0.3.20180727'
+version '0.3.10'
+
 def artifactId = 't-sql-common'
 apply plugin: 'java-library'
 apply plugin: 'maven'
@@ -36,8 +37,8 @@ artifacts {
 uploadArchives {
     repositories {
         mavenDeployer {
-            repository(url: "http://git.z-ip.top:8081/nexus/content/repositories/pr01/") {
-                authentication(userName: "admin", password: "YuanQiao520")
+            repository(url: "http://localhost:8081/nexus/content/repositories/releases/") {
+                authentication(userName: "admin", password: "admin123")
             }
             pom.version = "$project.version"
             pom.artifactId = "$artifactId"
