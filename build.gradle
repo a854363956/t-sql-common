@@ -9,6 +9,7 @@
 // Apply the java-library plugin to add support for Java Library
 group 'ratel'
 version '0.3.10'
+
 def artifactId = 't-sql-common'
 apply plugin: 'java-library'
 apply plugin: 'maven'
@@ -59,5 +60,6 @@ dependencies {
 	compile group: 'javax.persistence', name: 'persistence-api', version: '1.0'
 	// https://mvnrepository.com/artifact/org.slf4j/slf4j-api
 	compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+	
 }
 
