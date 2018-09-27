@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.zaxxer.hikari.HikariConfig;
@@ -20,12 +21,12 @@ import t.sql.query.Query;
 public class TestSession {
 	private SessionFactory sf;
 
-	// @Before
+   @Before
 	public void onInit() {
 		HikariConfig config = new HikariConfig();
-		config.setJdbcUrl("jdbc:mysql://localhost:3306/test_t_sql");
-		config.setUsername("test_t_sql");
-		config.setPassword("test_t_sql");
+		config.setJdbcUrl("jdbc:mysql://localhost:3306/t_base");
+		config.setUsername("root");
+		config.setPassword("");
 		config.addDataSourceProperty("cachePrepStmts", "true");
 		config.addDataSourceProperty("prepStmtCacheSize", "250");
 		config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
@@ -34,6 +35,12 @@ public class TestSession {
 		HikariDataSource ds = new HikariDataSource(config);
 		sf = new SessionFactoryImp(ds);
 	}
+   @Test
+   public void testProxy() {
+	   TestInterface o = (TestInterface) t.sql.dynamic.proxy.DynamicProxy.getInstance(TestInterface.class,sf);
+	   System.out.println(o.test().toString());
+	   System.out.println(o.getCurrentSession().toString());
+   }
 	@Test
 	public void testList() throws Exception {
 		List<Map<String,Object>> list = new ArrayList<Map<String,Object>>();

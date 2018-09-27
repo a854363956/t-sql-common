@@ -11,7 +11,7 @@ import java.sql.SQLException;
  */
 public interface SessionFactory {
 	/**
-	 * 获取当前线程的session,用户不需要手动管理此session对象
+	 * 获取当前线程的session,用户不需要手动管理此session对象,此方法绑定为当前线程
 	 * @return 
 	 * @throws SQLException 
 	 */
