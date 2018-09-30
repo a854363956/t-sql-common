@@ -25,8 +25,6 @@ public class RealObjectProxy implements InvocationHandler{
 		if(method.getName().equals("getCurrentSession")) {
 			return sessionFactory.getCurrentSession();
 		}
-		
-		
 		t.sql.dynamic.proxy.annotation.SqlDML sqlDml = method.getAnnotation(t.sql.dynamic.proxy.annotation.SqlDML.class);
 		if(sqlDml == null) {
 			throw new t.sql.exception.TSQLException("@SqlDML annotations are not used in current methods.");
