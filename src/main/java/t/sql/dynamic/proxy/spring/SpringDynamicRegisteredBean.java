@@ -162,15 +162,12 @@ public class SpringDynamicRegisteredBean implements ApplicationContextAware {
 	 * @param packageName 用'.'分隔的包名
 	 * @param recursive   是否递归搜索
 	 * @return 该包名下的所有类
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
 	 */
-	public static List<Class<?>> getClassInJar(String filePath, String packageName, boolean recursive) {
-		try {
-			JarFile jar = new JarFile(filePath);
-			return getClassInJar(jar, packageName, recursive);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return Collections.emptyList();
+	public static List<Class<?>> getClassInJar(String filePath, String packageName, boolean recursive) throws IOException, ClassNotFoundException {
+		JarFile jar = new JarFile(filePath);
+		return getClassInJar(jar, packageName, recursive);
 	}
 
 	/**
@@ -180,15 +177,12 @@ public class SpringDynamicRegisteredBean implements ApplicationContextAware {
 	 * @param packageName 用'.'分隔的包名
 	 * @param recursive   是否递归搜索
 	 * @return 该包名下的所有类
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
 	 */
-	public static List<Class<?>> getClassInJar(URL url, String packageName, boolean recursive) {
-		try {
-			JarFile jar = ((JarURLConnection) url.openConnection()).getJarFile();
-			return getClassInJar(jar, packageName, recursive);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return Collections.emptyList();
+	public static List<Class<?>> getClassInJar(URL url, String packageName, boolean recursive) throws IOException, ClassNotFoundException {
+		JarFile jar = ((JarURLConnection) url.openConnection()).getJarFile();
+		return getClassInJar(jar, packageName, recursive);
 	}
 
 	/**
@@ -198,8 +192,9 @@ public class SpringDynamicRegisteredBean implements ApplicationContextAware {
 	 * @param packageName 用'.'分隔的包名
 	 * @param recursive   是否递归搜索
 	 * @return 该包名下的所有类
+	 * @throws ClassNotFoundException 
 	 */
-	public static List<Class<?>> getClassInJar(JarFile jar, String packageName, boolean recursive) {
+	public static List<Class<?>> getClassInJar(JarFile jar, String packageName, boolean recursive) throws ClassNotFoundException {
 		List<Class<?>> classList = new ArrayList<Class<?>>();
 		// 该迭代器会递归得到该jar底下所有的目录和文件
 		Enumeration<JarEntry> iterator = jar.entries();
@@ -216,11 +211,7 @@ public class SpringDynamicRegisteredBean implements ApplicationContextAware {
 						if (recursive || packageName.length() == lastSlashIndex) {
 							String className = name.substring(0, lastDotClassIndex);
 							System.out.println(className);
-							try {
-								classList.add(Class.forName(className));
-							} catch (ClassNotFoundException e) {
-								e.printStackTrace();
-							}
+							classList.add(Class.forName(className));
 						}
 					}
 				}

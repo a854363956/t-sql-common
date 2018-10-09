@@ -277,7 +277,10 @@ public class SqlUtils {
 					Id id=field.getDeclaredAnnotation(Id.class);
 					if(id!=null) {
 						field.setAccessible(true);
-						field.set(dto, StringUtils.getUUID());
+						// 清除之前的如果@Id注解的字段为空，那么就生成一个UUID的字段，改为如果Id为空则警告用户
+						if(field.get(dto) == null) {
+							throw new TSQLException(String.format("[%s] @Id Field name can not be empty.",field.getName()));
+						}
 						break;
 					}
 				}
