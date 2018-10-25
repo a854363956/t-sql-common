@@ -3,7 +3,6 @@ package t.sql;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -12,7 +11,7 @@ public class SessionFactoryImp implements SessionFactory{
 	public SessionFactoryImp(DataSource ds) {
 		this.ds =ds;
 	}
-	public static final ThreadLocal<Session> session = new ThreadLocal<Session>();
+	public final ThreadLocal<Session> session = new ThreadLocal<Session>();
 	
 	@Override
 	public Session getCurrentSession() {
