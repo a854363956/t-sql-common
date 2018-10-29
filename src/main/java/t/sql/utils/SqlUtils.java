@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -21,6 +22,9 @@ public class SqlUtils {
 	public int toUpdateSqlDto(DTO dto,Connection connection) {
 		PreparedStatement ps  = null;
 		try {
+			// 注解属性和字段名称的对应
+			Map<String,String> attributes = new java.util.HashMap<String,String>();
+			
 			Class<?> clzz = dto.getClass();
 			Field[] fields =clzz.getDeclaredFields();
 			String tableName=clzz.getDeclaredAnnotation(Table.class).name();
@@ -33,8 +37,11 @@ public class SqlUtils {
 				Column column =field.getDeclaredAnnotation(Column.class);
 				if(column != null) {
 					String name = column.name();
+					// 如果等于空直接取字段名称，不等于空则添加属性和注解的对应关系
 					if("".equals(name)) {
 						name=field.getName();
+					}else {
+						attributes.put(name,field.getName());
 					}
 					set.append(name);
 					set.append("=:");
@@ -49,7 +56,13 @@ public class SqlUtils {
 			ps =connection.prepareStatement(exSql);
 			for(int i=0;i<l.size();i++) {
 				String name=l.get(i).replace(":", "");
-				Field f= clzz.getDeclaredField(name);
+				String aKey = attributes.get(name);
+				Field f = null;
+				if(aKey == null) {
+					f= clzz.getDeclaredField(name);
+				}else {
+					f= clzz.getDeclaredField(aKey);
+				}
 				f.setAccessible(true);
 				Object val =f.get(dto);
 				ps.setObject(i+1, val);
@@ -277,7 +290,10 @@ public class SqlUtils {
 					Id id=field.getDeclaredAnnotation(Id.class);
 					if(id!=null) {
 						field.setAccessible(true);
-						field.set(dto, StringUtils.getUUID());
+						// 清除之前的如果@Id注解的字段为空，那么就生成一个UUID的字段，改为如果Id为空则警告用户
+						if(field.get(dto) == null) {
+							throw new TSQLException(String.format("[%s] @Id Field name can not be empty.",field.getName()));
+						}
 						break;
 					}
 				}

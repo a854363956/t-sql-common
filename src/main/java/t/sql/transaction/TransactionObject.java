@@ -2,8 +2,6 @@ package t.sql.transaction;
 
 import java.sql.SQLException;
 
-import t.sql.Session;
-
 /***
  * 执行事务的基础接口
  * @author zhangj

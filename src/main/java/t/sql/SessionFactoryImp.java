@@ -11,7 +11,7 @@ public class SessionFactoryImp implements SessionFactory{
 	public SessionFactoryImp(DataSource ds) {
 		this.ds =ds;
 	}
-	public static final ThreadLocal<Session> session = new ThreadLocal<Session>();
+	public final ThreadLocal<Session> session = new ThreadLocal<Session>();
 	
 	@Override
 	public Session getCurrentSession() {
